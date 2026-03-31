@@ -165,8 +165,16 @@ try:
     if df_status.empty:
         st.info("No plane status data found.")
     else:
+        def _color_status(val):
+            if val == "Complete":
+                return "color: #00c853"
+            elif val == "Incomplete":
+                return "color: #ff3d00"
+            return ""
+
+        styled_status = df_status.style.map(_color_status, subset=["PLANE_STATUS"])
         st.dataframe(
-            df_status,
+            styled_status,
             width='stretch',
             hide_index=True,
             column_config={
