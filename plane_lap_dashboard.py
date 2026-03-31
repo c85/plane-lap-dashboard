@@ -3,7 +3,6 @@ import pandas as pd
 import snowflake.connector
 from streamlit_autorefresh import st_autorefresh
 
-
 def get_connection():
     return snowflake.connector.connect(
         account=st.secrets["snowflake"]["account"],
@@ -14,7 +13,6 @@ def get_connection():
         schema=st.secrets["snowflake"]["schema"],
         role=st.secrets["snowflake"].get("role", None),
     )
-
 
 def run_query(query: str):
     conn = get_connection()
@@ -93,8 +91,8 @@ st.markdown(
 )
 st.markdown("<hr style='margin-top:0.5em;'>", unsafe_allow_html=True)
 
-# Auto-refresh every 15 seconds
-st_autorefresh(interval=15_000, key="lap_dashboard_refresh")
+# Auto-refresh every 30 seconds
+st_autorefresh(interval=30_000, key="lap_dashboard_refresh")
 
 ASSEMBLY_LINES = [
     "White Assembly",
