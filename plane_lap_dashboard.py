@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import snowflake.connector
 from streamlit_autorefresh import st_autorefresh
+from datetime import date
 
 def get_connection():
     return snowflake.connector.connect(
@@ -124,6 +125,18 @@ def fetch_assembly_data(assembly_line: str) -> pd.DataFrame:
     return pd.DataFrame(rows, columns=columns)
 
 
+def get_current_round() -> str:
+    today = date.today()
+    if today <= date(2026, 3, 28):
+        return "OT_ROUND_1"
+    elif today <= date(2026, 4, 4):
+        return "OT_ROUND_2"
+    elif today <= date(2026, 4, 11):
+        return "OT_ROUND_3"
+    else:
+        return "OT_ROUND_4"
+
+
 PLANE_STATUS_QUERY = """
 WITH ALL_LINES AS (
     SELECT COUNT(DISTINCT ASSEMBLY_LINE) AS TOTAL_LINES
@@ -145,6 +158,9 @@ PLANE_STATS AS (
 
 SELECT
     PS.PLANE_ID,
+    RND.MODEL,
+    RND.COLOR,
+    RND.TIME_DUE,
     CASE
         WHEN PS.LINES_WITH_TIME = AL.TOTAL_LINES THEN 'Complete'
         ELSE 'Incomplete'
@@ -155,12 +171,14 @@ SELECT
     END AS TOTAL_BUILD_TIME
 FROM PLANE_STATS PS
 CROSS JOIN ALL_LINES AL
+LEFT JOIN {round_table} RND
+ON PS.PLANE_ID = RND.PLANE_ID
 ORDER BY PS.PLANE_ID
 """
 
 st.markdown("<div class='assembly-title'>Plane Build Status</div>", unsafe_allow_html=True)
 try:
-    columns, rows = run_query(PLANE_STATUS_QUERY)
+    columns, rows = run_query(PLANE_STATUS_QUERY.format(round_table=get_current_round()))
     df_status = pd.DataFrame(rows, columns=columns)
     if df_status.empty:
         st.info("No plane status data found.")
