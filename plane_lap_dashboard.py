@@ -83,11 +83,29 @@ div[data-testid="stAlert"] {
 </style>
 """, unsafe_allow_html=True)
 
+def get_current_round() -> str:
+    today = date.today()
+    if today <= date(2026, 3, 28):
+        return "OT_ROUND_1"
+    elif today <= date(2026, 4, 4):
+        return "OT_ROUND_2"
+    elif today <= date(2026, 4, 11):
+        return "OT_ROUND_3"
+    else:
+        return "OT_ROUND_4"
+
+
 # ── Header ────────────────────────────────────────────────────────────────────
 st.markdown(
     "<h2 style='text-align:center; font-family:Rajdhani; font-weight:700; "
     "letter-spacing:0.18em; color:#e0e6f0; text-transform:uppercase; "
     "margin-bottom:0;'>✈ Plane Lap Times Dashboard</h2>",
+    unsafe_allow_html=True,
+)
+_round_label = get_current_round().replace("OT_", "").replace("_", " ").title()
+st.markdown(
+    f"<p style='text-align:center; font-family:Rajdhani; font-size:1.25em; color:#a0aab8; "
+    f"margin-top:0.25em; margin-bottom:0;'>{_round_label}</p>",
     unsafe_allow_html=True,
 )
 st.markdown("<hr style='margin-top:0.5em;'>", unsafe_allow_html=True)
@@ -125,16 +143,6 @@ def fetch_assembly_data(assembly_line: str) -> pd.DataFrame:
     return pd.DataFrame(rows, columns=columns)
 
 
-def get_current_round() -> str:
-    today = date.today()
-    if today <= date(2026, 3, 28):
-        return "OT_ROUND_1"
-    elif today <= date(2026, 4, 4):
-        return "OT_ROUND_2"
-    elif today <= date(2026, 4, 11):
-        return "OT_ROUND_3"
-    else:
-        return "OT_ROUND_4"
 
 
 PLANE_STATUS_QUERY = """
