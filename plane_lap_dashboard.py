@@ -198,7 +198,23 @@ try:
                 return "color: #ff3d00"
             return ""
 
-        styled_status = df_status.style.map(_color_status, subset=["PLANE_STATUS"])
+        COLOR_MAP = {
+            "Minion":     "color: #ffd600",
+            "Sonic":      "color: #1565c0",
+            "Wazowski":   "color: #2e7d32",
+            "Daffy":      "color: #e65100",
+            "Psylocke":   "color: #6a1b9a",
+            "Red Baron":  "color: #c62828",
+        }
+
+        def _color_plane_color(val):
+            return COLOR_MAP.get(val, "")
+
+        styled_status = (
+            df_status.style
+            .map(_color_status, subset=["PLANE_STATUS"])
+            .map(_color_plane_color, subset=["COLOR"])
+        )
         st.dataframe(
             styled_status,
             width='stretch',
