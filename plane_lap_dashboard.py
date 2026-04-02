@@ -134,6 +134,7 @@ FROM CLASS_PROJECT.OT_PLANE_PROJECT.OT_PLANE_LAP_TIMES A
 LEFT JOIN CLASS_PROJECT.OT_PLANE_PROJECT.OT_PLANE_TEAM_MEMBERS B
     ON A.OPERATOR = B.OPERATOR
 WHERE B.ASSEMBLY_LINE = '{assembly_line}'
+QUALIFY ROW_NUMBER() OVER (PARTITION BY PLANE_ID, A.OPERATOR, ASSEMBLY_LINE ORDER BY LOGGED_AT DESC) = 1
 """
 
 
@@ -141,8 +142,6 @@ def fetch_assembly_data(assembly_line: str) -> pd.DataFrame:
     query = QUERY_TEMPLATE.format(assembly_line=assembly_line)
     columns, rows = run_query(query)
     return pd.DataFrame(rows, columns=columns)
-
-
 
 
 PLANE_STATUS_QUERY = """
