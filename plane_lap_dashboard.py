@@ -108,7 +108,7 @@ st.markdown(
     f"margin-top:0.25em; margin-bottom:0;'>{_round_label}</p>",
     unsafe_allow_html=True,
 )
-st.markdown("<hr style='margin-top:0.5em;'>", unsafe_allow_html=True)
+st.markdown("<hr style='margin-top:0.5em; margin-bottom:0.25rem;'>", unsafe_allow_html=True)
 
 # Auto-refresh every 30 seconds
 st_autorefresh(interval=30_000, key="lap_dashboard_refresh")
@@ -184,7 +184,7 @@ CROSS JOIN ALL_LINES AL
 ORDER BY CAST(RND.PLANE_ID AS INT)
 """
 
-st.markdown("<div class='assembly-title'>Plane Build Status</div>", unsafe_allow_html=True)
+st.markdown("<div class='assembly-title' style='margin-top:-0.75rem;'>Plane Build Status</div>", unsafe_allow_html=True)
 try:
     columns, rows = run_query(PLANE_STATUS_QUERY.format(round_table=get_current_round()))
     df_status = pd.DataFrame(rows, columns=columns)
