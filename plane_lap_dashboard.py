@@ -110,8 +110,8 @@ st.markdown(
 )
 st.markdown("<hr style='margin-top:0.5em; margin-bottom:0.25rem;'>", unsafe_allow_html=True)
 
-# Auto-refresh every 60 seconds
-st_autorefresh(interval=60_000, key="lap_dashboard_refresh")
+# Auto-refresh every 5 minutes
+st_autorefresh(interval=300_000, key="lap_dashboard_refresh")
 
 ASSEMBLY_LINES = [
     "White Assembly",
